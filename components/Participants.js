@@ -1,11 +1,21 @@
+'use client'
+
 import React from "react";
-import { usePresence, assertConfiguration } from "@ably-labs/react-hooks";
+import { useAbly, usePresence } from "@ably-labs/react-hooks";
 import styles from "../styles/Home.module.css";
 
 export default function Participants(props) {
-  const ably = assertConfiguration();
-  const [presenceData] = usePresence("headlines");
 
+  const ably = useAbly();
+  const { connectionError, channelError, presenceData } = usePresence("headlines");
+
+  if (connectionError) {
+    console.log(connectionError);
+  } else if (channelError) {
+    console.log(channelError)
+  } else {
+    
+  
   const presenceList = presenceData.map((member, index) => {
     const isItMe = member.clientId === ably.auth.clientId ? "(me)" : "";
 
@@ -16,6 +26,7 @@ export default function Participants(props) {
       </li>
     );
   });
-
+  
   return <ul>{presenceList}</ul>;
+}
 }

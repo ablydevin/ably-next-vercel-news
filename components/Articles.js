@@ -1,5 +1,7 @@
+'use client'
+
 import React, { useState } from "react";
-import { useChannel } from "@ably-labs/react-hooks";
+import { useChannel, useAbly } from "@ably-labs/react-hooks";
 import ArticlePreview from "./ArticlePreview";
 import styles from "../styles/Home.module.css";
 
@@ -12,11 +14,12 @@ clearHistoryState:
 let clearHistoryState = true;
 
 export default function Articles(props) {
+  const ably = useAbly();
   let inputBox = null;
 
   const [headlineText, setHeadlineText] = useState("");
   const [headlines, updateHeadlines] = useState(props.history);
-  const [_, ably] = useChannel("[?rewind=5]headlines", (headline) => {
+  const { connectionError, channelError, channel } = useChannel("[?rewind=5]headlines", (headline) => {
     if (clearHistoryState) {
       resetHeadlines();
       clearHistoryState = false;
@@ -24,7 +27,10 @@ export default function Articles(props) {
 
     updateHeadlines((prev) => [headline, ...prev]);
   });
-
+  
+    
+  
+  
   const resetHeadlines = () => {
     updateHeadlines([]);
   };
@@ -54,34 +60,39 @@ export default function Articles(props) {
     setHeadlineText("");
     inputBox?.focus();
   };
-
-  return (
-    <div>
-      <form onSubmit={handleFormSubmission} className={styles.form}>
-        <input
-          type="text"
-          ref={(element) => {
-            inputBox = element;
-          }}
-          value={headlineText}
-          placeholder="News article url"
-          onChange={(event) => setHeadlineText(event.target.value)}
-          onKeyPress={handleFormSubmission}
-          className={styles.input}
-        />
-        <button
-          type="submit"
-          className={styles.submit}
-          disabled={headlineTextIsEmpty}
-        >
-          Submit
-        </button>
-      </form>
-      <div>{articles}</div>
-    </div>
-  );
+  if (connectionError) {
+    // TODO: handle connection errors
+    console.log(connectionError)
+  } else if (channelError) {
+    console.log(channelError)
+  } else {
+    return (
+      <div>
+        <form onSubmit={handleFormSubmission} className={styles.form}>
+          <input
+            type="text"
+            ref={(element) => {
+              inputBox = element;
+            }}
+            value={headlineText}
+            placeholder="News article url"
+            onChange={(event) => setHeadlineText(event.target.value)}
+            onKeyPress={handleFormSubmission}
+            className={styles.input}
+          />
+          <button
+            type="submit"
+            className={styles.submit}
+            disabled={headlineTextIsEmpty}
+          >
+            Submit
+          </button>
+        </form>
+        <div>{articles}</div>
+      </div>
+    );
+  }
 }
-
 function processMessage(headline, currentClientId) {
   /*headline.data.author =
     headline.data.author === currentClientId ? "me" : headline.data.author;*/

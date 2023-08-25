@@ -3,13 +3,9 @@ import Image from "next/image";
 import ablyLogo from "../public/ably-logo.svg";
 import styles from "../styles/Home.module.css";
 import Participants from "../components/Participants";
-import { configureAbly } from "@ably-labs/react-hooks";
+import { AblyProvider } from "@ably-labs/react-hooks";
 import Articles from "../components/Articles";
 import { getHistoricalMessages } from "../lib/history";
-
-configureAbly({
-  authUrl: `${process.env.NEXT_PUBLIC_HOSTNAME}/api/createTokenRequest`,
-});
 
 export default function Home(props) {
   return (
@@ -34,21 +30,23 @@ export default function Home(props) {
         <h1>Realtime News</h1>
         <h2>Share your favorite news articles</h2>
         <h3>Participants</h3>
-        <Participants />
-        <Articles history={props.history} />
+        <AblyProvider options={{ authUrl: `/api/createTokenRequest` }}>
+          <Participants />
+          {/* <Articles history={props.history} /> */}
+        </AblyProvider>
       </main>
     </div>
   );
 }
 
-export async function getStaticProps() {
-  const historicalMessages = await getHistoricalMessages();
+// export async function getStaticProps() {
+//   const historicalMessages = await getHistoricalMessages();
 
-  return {
-    props: {
-      history: historicalMessages,
-    },
-    //enable ISR
-    revalidate: 10,
-  };
-}
+//   return {
+//     props: {
+//       history: historicalMessages,
+//     },
+//     //enable ISR
+//     revalidate: 10,
+//   };
+// }
