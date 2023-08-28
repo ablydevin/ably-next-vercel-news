@@ -1,11 +1,13 @@
+'use client'
+
 import Head from "next/head";
-import Image from "next/image";
-import ablyLogo from "../public/ably-logo.svg";
+//import Image from "next/image";
+//import ablyLogo from "../public/ably-logo.svg";
 import styles from "../styles/Home.module.css";
 import Participants from "../components/Participants";
 import { AblyProvider } from "@ably-labs/react-hooks";
-import Articles from "../components/Articles";
-import { getHistoricalMessages } from "../lib/history";
+//import Articles from "../components/Articles";
+//import { getHistoricalMessages } from "../lib/history";
 
 export default function Home(props) {
   return (
@@ -21,16 +23,19 @@ export default function Home(props) {
       </Head>
 
       <main className={styles.main}>
-        <Image
+        {/* <Image
           alt="ably logo"
           src={ablyLogo}
           width="160px"
           height="100%"
-        ></Image>
+        ></Image> */}
         <h1>Realtime News</h1>
         <h2>Share your favorite news articles</h2>
         <h3>Participants</h3>
-        <AblyProvider options={{ authUrl: `/api/createTokenRequest` }}>
+        <AblyProvider options={{ 
+          key:'',
+          clientId: 'me'
+           }}>
           <Participants />
           {/* <Articles history={props.history} /> */}
         </AblyProvider>
