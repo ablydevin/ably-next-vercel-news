@@ -1,32 +1,32 @@
 'use client'
 
 import React from "react";
-import { useAbly, usePresence } from "@ably-labs/react-hooks";
-import styles from "../styles/Home.module.css";
+import { useAbly, useChannel, usePresence } from "@ably-labs/react-hooks";
 
-export default function Participants(props) {
+export default function Participants() {
 
   const ably = useAbly();
-  const { connectionError, channelError, presenceData } = usePresence("headlines");
+  const {channel} = useChannel('asdasd')
+  //usePresence("asdasdsd")//, "", (member) => {
+  //   return (
+  //       <li key={member.id}>{member.clientId}</li>
+  //   )
+  // });
 
-  if (connectionError) {
-    console.log(connectionError);
-  } else if (channelError) {
-    console.log(channelError)
-  } else {
-    
-  
-  const presenceList = presenceData.map((member, index) => {
-    const isItMe = member.clientId === ably.auth.clientId ? "(me)" : "";
+  // const presenceList = presenceData.map((member) => {
+  //   //const isItMe = member.clientId === ably.auth.clientId ? "(me)" : "";
 
-    return (
-      <li key={index} className={styles.participant}>
-        <span className={styles.name}>{member.clientId}</span>
-        <span className={styles.me}>{isItMe}</span>
-      </li>
-    );
-  });
+  //   return (
+  //     <li>
+  //       <span>{member.clientId}</span>
+  //       {/* <span>{isItMe}</span> */}
+  //     </li>
+  //   );
+  // });
   
-  return <ul>{presenceList}</ul>;
+  return (
+    <ul>          
+    </ul>
+  )
 }
-}
+
